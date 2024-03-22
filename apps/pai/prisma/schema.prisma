@@ -6,3 +6,17 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
+
+model User {
+  createdAt                  DateTime @default(now())
+  email                      String   @unique
+  facebookAccessToken        String?
+  facebookAccessTokenExpired Boolean?
+  firebaseAuthId             String?  @unique
+  firstName                  String?
+  id                         String   @id @default(cuid())
+  lastName                   String?
+  onboardingCompleted        Boolean?
+  roles                      Json
+  updatedAt                  DateTime @updatedAt
+}
