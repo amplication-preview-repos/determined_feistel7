@@ -1,4 +1,5 @@
 import { InputJsonValue } from "../../types";
+import { TeamCreateNestedManyWithoutUsersInput } from "./TeamCreateNestedManyWithoutUsersInput";
 
 export type UserCreateInput = {
   email: string;
@@ -9,4 +10,5 @@ export type UserCreateInput = {
   lastName?: string | null;
   onboardingCompleted?: boolean | null;
   roles: InputJsonValue;
+  teams?: TeamCreateNestedManyWithoutUsersInput;
 };

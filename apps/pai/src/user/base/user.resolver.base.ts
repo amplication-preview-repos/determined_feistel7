@@ -20,6 +20,8 @@ import { UserFindUniqueArgs } from "./UserFindUniqueArgs";
 import { CreateUserArgs } from "./CreateUserArgs";
 import { UpdateUserArgs } from "./UpdateUserArgs";
 import { DeleteUserArgs } from "./DeleteUserArgs";
+import { TeamFindManyArgs } from "../../team/base/TeamFindManyArgs";
+import { Team } from "../../team/base/Team";
 import { UserService } from "../user.service";
 @graphql.Resolver(() => User)
 export class UserResolverBase {
@@ -85,5 +87,19 @@ export class UserResolverBase {
       }
       throw error;
     }
+  }
+
+  @graphql.ResolveField(() => [Team], { name: "teams" })
+  async findTeams(
+    @graphql.Parent() parent: User,
+    @graphql.Args() args: TeamFindManyArgs
+  ): Promise<Team[]> {
+    const results = await this.service.findTeams(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
   }
 }

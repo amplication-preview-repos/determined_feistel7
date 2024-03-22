@@ -22,6 +22,9 @@ import { User } from "./User";
 import { UserFindManyArgs } from "./UserFindManyArgs";
 import { UserWhereUniqueInput } from "./UserWhereUniqueInput";
 import { UserUpdateInput } from "./UserUpdateInput";
+import { TeamFindManyArgs } from "../../team/base/TeamFindManyArgs";
+import { Team } from "../../team/base/Team";
+import { TeamWhereUniqueInput } from "../../team/base/TeamWhereUniqueInput";
 
 export class UserControllerBase {
   constructor(protected readonly service: UserService) {}
@@ -165,5 +168,82 @@ export class UserControllerBase {
       }
       throw error;
     }
+  }
+
+  @common.Get("/:id/teams")
+  @ApiNestedQuery(TeamFindManyArgs)
+  async findTeams(
+    @common.Req() request: Request,
+    @common.Param() params: UserWhereUniqueInput
+  ): Promise<Team[]> {
+    const query = plainToClass(TeamFindManyArgs, request.query);
+    const results = await this.service.findTeams(params.id, {
+      ...query,
+      select: {
+        createdAt: true,
+        id: true,
+        industry: true,
+        name: true,
+        updatedAt: true,
+        websiteUrl: true,
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/teams")
+  async connectTeams(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: TeamWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      teams: {
+        connect: body,
+      },
+    };
+    await this.service.updateUser({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/teams")
+  async updateTeams(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: TeamWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      teams: {
+        set: body,
+      },
+    };
+    await this.service.updateUser({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/teams")
+  async disconnectTeams(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: TeamWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      teams: {
+        disconnect: body,
+      },
+    };
+    await this.service.updateUser({
+      where: params,
+      data,
+      select: { id: true },
+    });
   }
 }

@@ -22,6 +22,9 @@ import { Team } from "./Team";
 import { TeamFindManyArgs } from "./TeamFindManyArgs";
 import { TeamWhereUniqueInput } from "./TeamWhereUniqueInput";
 import { TeamUpdateInput } from "./TeamUpdateInput";
+import { UserFindManyArgs } from "../../user/base/UserFindManyArgs";
+import { User } from "../../user/base/User";
+import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
 
 export class TeamControllerBase {
   constructor(protected readonly service: TeamService) {}
@@ -34,7 +37,6 @@ export class TeamControllerBase {
         createdAt: true,
         id: true,
         industry: true,
-        members: true,
         name: true,
         updatedAt: true,
         websiteUrl: true,
@@ -53,7 +55,6 @@ export class TeamControllerBase {
         createdAt: true,
         id: true,
         industry: true,
-        members: true,
         name: true,
         updatedAt: true,
         websiteUrl: true,
@@ -73,7 +74,6 @@ export class TeamControllerBase {
         createdAt: true,
         id: true,
         industry: true,
-        members: true,
         name: true,
         updatedAt: true,
         websiteUrl: true,
@@ -102,7 +102,6 @@ export class TeamControllerBase {
           createdAt: true,
           id: true,
           industry: true,
-          members: true,
           name: true,
           updatedAt: true,
           websiteUrl: true,
@@ -131,7 +130,6 @@ export class TeamControllerBase {
           createdAt: true,
           id: true,
           industry: true,
-          members: true,
           name: true,
           updatedAt: true,
           websiteUrl: true,
@@ -145,5 +143,87 @@ export class TeamControllerBase {
       }
       throw error;
     }
+  }
+
+  @common.Get("/:id/members")
+  @ApiNestedQuery(UserFindManyArgs)
+  async findMembers(
+    @common.Req() request: Request,
+    @common.Param() params: TeamWhereUniqueInput
+  ): Promise<User[]> {
+    const query = plainToClass(UserFindManyArgs, request.query);
+    const results = await this.service.findMembers(params.id, {
+      ...query,
+      select: {
+        createdAt: true,
+        email: true,
+        facebookAccessToken: true,
+        facebookAccessTokenExpired: true,
+        firebaseAuthId: true,
+        firstName: true,
+        id: true,
+        lastName: true,
+        onboardingCompleted: true,
+        roles: true,
+        updatedAt: true,
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/members")
+  async connectMembers(
+    @common.Param() params: TeamWhereUniqueInput,
+    @common.Body() body: UserWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      members: {
+        connect: body,
+      },
+    };
+    await this.service.updateTeam({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/members")
+  async updateMembers(
+    @common.Param() params: TeamWhereUniqueInput,
+    @common.Body() body: UserWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      members: {
+        set: body,
+      },
+    };
+    await this.service.updateTeam({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/members")
+  async disconnectMembers(
+    @common.Param() params: TeamWhereUniqueInput,
+    @common.Body() body: UserWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      members: {
+        disconnect: body,
+      },
+    };
+    await this.service.updateTeam({
+      where: params,
+      data,
+      select: { id: true },
+    });
   }
 }

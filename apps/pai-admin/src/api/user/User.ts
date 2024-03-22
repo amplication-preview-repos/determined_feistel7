@@ -1,4 +1,5 @@
 import { JsonValue } from "type-fest";
+import { Team } from "../team/Team";
 
 export type User = {
   createdAt: Date;
@@ -11,5 +12,6 @@ export type User = {
   lastName: string | null;
   onboardingCompleted: boolean | null;
   roles: JsonValue;
+  teams?: Array<Team>;
   updatedAt: Date;
 };

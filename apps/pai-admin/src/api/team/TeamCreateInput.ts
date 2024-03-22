@@ -1,8 +1,8 @@
-import { InputJsonValue } from "../../types";
+import { UserCreateNestedManyWithoutTeamsInput } from "./UserCreateNestedManyWithoutTeamsInput";
 
 export type TeamCreateInput = {
   industry?: string | null;
-  members?: InputJsonValue;
+  members?: UserCreateNestedManyWithoutTeamsInput;
   name?: string | null;
   websiteUrl?: string | null;
 };

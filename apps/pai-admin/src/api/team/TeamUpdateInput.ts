@@ -1,8 +1,8 @@
-import { InputJsonValue } from "../../types";
+import { UserUpdateManyWithoutTeamsInput } from "./UserUpdateManyWithoutTeamsInput";
 
 export type TeamUpdateInput = {
   industry?: string | null;
-  members?: InputJsonValue;
+  members?: UserUpdateManyWithoutTeamsInput;
   name?: string | null;
   websiteUrl?: string | null;
 };

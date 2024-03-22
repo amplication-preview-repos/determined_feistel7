@@ -14,7 +14,6 @@ export const TeamShow = (props: ShowProps): React.ReactElement => {
         <DateField source="createdAt" label="Created At" />
         <TextField label="ID" source="id" />
         <TextField label="Industry" source="industry" />
-        <TextField label="Members" source="members" />
         <TextField label="Name" source="name" />
         <DateField source="updatedAt" label="Updated At" />
         <TextField label="Website URL" source="websiteUrl" />

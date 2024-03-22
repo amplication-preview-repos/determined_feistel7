@@ -1,4 +1,5 @@
 import { InputJsonValue } from "../../types";
+import { TeamUpdateManyWithoutUsersInput } from "./TeamUpdateManyWithoutUsersInput";
 
 export type UserUpdateInput = {
   email?: string;
@@ -9,4 +10,5 @@ export type UserUpdateInput = {
   lastName?: string | null;
   onboardingCompleted?: boolean | null;
   roles?: InputJsonValue;
+  teams?: TeamUpdateManyWithoutUsersInput;
 };

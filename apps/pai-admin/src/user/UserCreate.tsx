@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import {
   Create,
   SimpleForm,
@@ -6,7 +7,10 @@ import {
   TextInput,
   BooleanInput,
   SelectArrayInput,
+  ReferenceArrayInput,
 } from "react-admin";
+
+import { TeamTitle } from "../team/TeamTitle";
 import { ROLES_OPTIONS } from "../user/RolesOptions";
 
 export const UserCreate = (props: CreateProps): React.ReactElement => {
@@ -32,6 +36,14 @@ export const UserCreate = (props: CreateProps): React.ReactElement => {
           optionText="label"
           optionValue="value"
         />
+        <ReferenceArrayInput
+          source="teams"
+          reference="Team"
+          parse={(value: any) => value && value.map((v: any) => ({ id: v }))}
+          format={(value: any) => value && value.map((v: any) => v.id)}
+        >
+          <SelectArrayInput optionText={TeamTitle} />
+        </ReferenceArrayInput>
       </SimpleForm>
     </Create>
   );
